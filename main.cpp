@@ -1,13 +1,19 @@
+#include <SFML/Graphics.hpp>
 #include <iostream>
 
-const int WIDTH = 16;
-const int HEIGHT = 9;
-int set_0[5] = {18, 35, 49, 50, 51};
+const int WIDTH = 26;
+const int HEIGHT = 18;
+const int SIDE_OF_SQUARE = 40;
+//int set_0[5] = {18, 35, 49, 50, 51};
+int step = 0;
+bool paused = true;
 
 class Field {
 public:
     Field(): field(new bool[WIDTH * HEIGHT]) {}
-
+    bool& operator[](int index) {
+        return *(field + index);
+    }
     void update() {
         int alive_neighbors;
         bool* new_field = new bool[WIDTH * HEIGHT];
@@ -27,6 +33,9 @@ public:
             }
         delete[] field;
         field = new_field;
+    }
+    void toggle(int x, int y) {
+        field[y * WIDTH + x] = !field[y * WIDTH + x];
     }
     void clear() {
         for (int i = 0; i < HEIGHT; i++)
@@ -53,17 +62,60 @@ private:
     bool* field;
 };
 
-
-int main() {
+int main()
+{
     Field field;
     field.clear();
-    field.set(set_0, std::size(set_0));
-    field.show();
-    for (int i = 0; i < 5; i++) {
-        field.update();
-        field.show();
+//    field.set(set_0, std::size(set_0));
+
+    sf::RenderWindow window(sf::VideoMode(1280, 720), "Game of life");
+    window.setFramerateLimit(60);
+
+    sf::Event event;
+
+    sf::RectangleShape rectangle(sf::Vector2f(SIDE_OF_SQUARE, SIDE_OF_SQUARE));
+    rectangle.setFillColor(sf::Color::White);
+
+    sf::RectangleShape rectangle2(sf::Vector2f(6 * SIDE_OF_SQUARE, 18 * SIDE_OF_SQUARE));
+    rectangle2.setFillColor(sf::Color::White);
+    rectangle2.setPosition(26 * SIDE_OF_SQUARE, 0);
+
+    while (window.isOpen())
+    {
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed) window.close();
+            if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::Escape) window.close();
+            }
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2i m_position = sf::Mouse::getPosition(window);
+                    int mouse_x = m_position.x / SIDE_OF_SQUARE;
+                    int mouse_y = m_position.y / SIDE_OF_SQUARE;
+                    if (mouse_x < WIDTH)
+                        field.toggle(mouse_x, mouse_y);
+                }
+            }
+        }
+
+        window.clear();
+        step++;
+        if (step % 11 == 0 && !paused) {
+            field.update();
+            step = 0;
+        }
+        for (int i = 0; i < HEIGHT; i++)
+            for (int j = 0; j < WIDTH; j++)
+                if (field[i * WIDTH + j]) {
+                    rectangle.setPosition(j * SIDE_OF_SQUARE,i * SIDE_OF_SQUARE);
+                    window.draw(rectangle);
+                }
+        window.draw(rectangle2);
+        window.display();
     }
+
     return 0;
 }
-
 
