@@ -18,3 +18,5 @@ set(SFML_BUILD_NETWORK FALSE)
 FetchContent_MakeAvailable(sfml)
 
 target_link_libraries(game_of_life PUBLIC sfml-graphics)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/textures DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/slkscr.ttf DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
