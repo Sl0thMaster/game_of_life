@@ -6,7 +6,9 @@ project(game_of_life)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(game_of_life main.cpp)
+add_executable(game_of_life main.cpp
+        field.h
+        field.cpp)
 
 FetchContent_Declare(
         sfml
