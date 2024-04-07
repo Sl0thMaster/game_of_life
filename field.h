@@ -1,6 +1,16 @@
+#include <iostream>
+
 class Field {
 public:
-    Field(int field_width, int field_height);
+    Field(int field_width, int field_height);;
+
+    Field(const Field& other);;
+
+    Field(Field&& other);;
+
+    Field& operator=(Field copy);;
+
+    ~Field();
 
     bool& operator[](int index);
 
@@ -18,4 +28,6 @@ private:
     bool* field;
     int width;
     int height;
+
+    void swap(Field& other);
 };
