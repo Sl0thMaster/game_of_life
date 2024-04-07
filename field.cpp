@@ -6,6 +6,25 @@ Field::Field(int field_width, int field_height) {
     field = new bool[width * height];
 }
 
+Field::Field(const Field &other) {
+    width = other.width;
+    height = other.height;
+    field = new bool[width * height];
+    for (int i = 0; i < width * height; i++)
+        *(field + i) = *(other.field + i);
+}
+
+Field::Field(Field &&other) : width(other.width), height(other.height), field(other.field) {}
+
+Field &Field::operator=(Field copy) {
+    swap(copy);
+    return *this;
+}
+
+Field::~Field() {
+    delete[] field;
+}
+
 bool &Field::operator[](int index) {
     return *(field + index);
 }
@@ -61,4 +80,10 @@ void Field::set(int *x, int size) {
             for (int j = 0; j < width; j++)
                 if (x[k] == i * width + j)
                     field[i * width + j] = true;
+}
+
+void Field::swap(Field &other) {
+    std::swap(width, other.width);
+    std::swap(height, other.height);
+    std::swap(field, other.field);
 }
