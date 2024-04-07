@@ -2,28 +2,35 @@
 #include <iostream>
 #include "field.h"
 
+const int WIDTH = 26;
+const int HEIGHT = 18;
 const int SIDE_OF_SQUARE = 40;
 const int FPS = 60;
 int set_0[5] = {28, 55, 79, 80, 81};
+int set_1[36] = {77, 127, 129, 169, 170, 177, 178, 191, 192, 220, 224,
+                 229, 230, 243, 244, 261, 262, 271, 277,281, 282,
+                 313, 314, 323, 327, 329, 330, 335, 337, 375, 381,
+                 389, 428, 432, 481, 482};
 int step = 0;
 int game_speed = 3;
 bool paused = true;
 bool button1_available = true;
 bool button2_available = true;
+int field_scale = 2;
 
 int main()
 {
-    Field field;
+    Field field = Field(field_scale * WIDTH, field_scale * HEIGHT);
     field.clear();
-//    field.set(set_0, std::size(set_0));
+    field.set(set_1, std::size(set_1));
 
-    sf::RenderWindow window(sf::VideoMode(1280, 720), "Game of life");
+    sf::RenderWindow window(sf::VideoMode(1280, 720), "Game of life", sf::Style::Titlebar | sf::Style::Close);
     window.setFramerateLimit(FPS);
 
     sf::Event event;
 
-    sf::RectangleShape rectangle(sf::Vector2f(SIDE_OF_SQUARE, SIDE_OF_SQUARE));
-    rectangle.setFillColor(sf::Color::White);
+    sf::RectangleShape cell(sf::Vector2f(SIDE_OF_SQUARE / field_scale, SIDE_OF_SQUARE / field_scale));
+    cell.setFillColor(sf::Color::White);
 
     sf::RectangleShape pixel(sf::Vector2f(1, 1));
     pixel.setFillColor(sf::Color::Black);
@@ -82,7 +89,7 @@ int main()
                     int mouse_x = m_position.x / SIDE_OF_SQUARE;
                     int mouse_y = m_position.y / SIDE_OF_SQUARE;
                     if (mouse_x < WIDTH)
-                        field.toggle(mouse_x, mouse_y);
+                        field.toggle(m_position.x / (SIDE_OF_SQUARE / field_scale), m_position.y / (SIDE_OF_SQUARE / field_scale));
                     else if (27 <= mouse_x && mouse_x < 31 && 15 <= mouse_y && mouse_y < 17)
                         paused = !paused;
                     else if (29 <= mouse_x && mouse_x < 31 && 4 <= mouse_y && mouse_y < 6 && button2_available) {
@@ -104,21 +111,21 @@ int main()
         window.draw(frame);
 //        Обновление поля
         step++;
-        if (step % (FPS/(game_speed * game_speed) - 1) == 0 && !paused) {
-            field.update();
+        if (step % (32 >> game_speed) == 0 && !paused) {
+            field.advance();
             step = 0;
         }
 //        Наполнение поля живыми клетками
-        for (int i = 0; i < HEIGHT; i++)
-            for (int j = 0; j < WIDTH; j++)
-                if (field[i * WIDTH + j]) {
-                    rectangle.setPosition(j * SIDE_OF_SQUARE,i * SIDE_OF_SQUARE);
-                    window.draw(rectangle);
+        for (int i = 0; i < field_scale * HEIGHT; i++)
+            for (int j = 0; j < field_scale * WIDTH; j++)
+                if (field[i * field_scale * WIDTH + j]) {
+                    cell.setPosition(j * SIDE_OF_SQUARE / field_scale,i * SIDE_OF_SQUARE / field_scale);
+                    window.draw(cell);
                 }
 //        Сетка поля
-        for (int i = 0; i < 26 * SIDE_OF_SQUARE; i++)
-            for (int j = 0; j < 18 * SIDE_OF_SQUARE; j++)
-                if ((i + 1) % SIDE_OF_SQUARE <= 1 || (j + 1) % SIDE_OF_SQUARE <= 1) {
+        for (int i = 0; i < WIDTH * SIDE_OF_SQUARE; i++)
+            for (int j = 0; j < HEIGHT * SIDE_OF_SQUARE; j++)
+                if ((i + 1) % (SIDE_OF_SQUARE / field_scale) <= 1 || (j + 1) % (SIDE_OF_SQUARE / field_scale) <= 1) {
                     pixel.setPosition(i, j);
                     window.draw(pixel);
                 }
