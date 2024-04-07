@@ -15,7 +15,7 @@ Field::Field(const Field &other) {
 }
 
 Field::Field(Field &&other) : width(other.width), height(other.height), field(other.field) {
-    other.field = new bool[1];
+    other.field = new bool[width * height];
 }
 
 Field &Field::operator=(Field copy) {
