@@ -14,7 +14,9 @@ Field::Field(const Field &other) {
         *(field + i) = *(other.field + i);
 }
 
-Field::Field(Field &&other) : width(other.width), height(other.height), field(other.field) {}
+Field::Field(Field &&other) : width(other.width), height(other.height), field(other.field) {
+    other.field = new bool[1];
+}
 
 Field &Field::operator=(Field copy) {
     swap(copy);
