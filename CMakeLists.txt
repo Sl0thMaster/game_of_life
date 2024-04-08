@@ -7,11 +7,9 @@ project(game_of_life)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(game_of_life main.cpp
-        field.h
-        field.cpp)
-
 add_library(field field.h field.cpp)
+add_executable(game_of_life main.cpp)
+target_link_libraries(game_of_life PRIVATE field)
 
 add_executable(field_test test.cpp)
 target_link_libraries(field_test PRIVATE field)
@@ -26,7 +24,7 @@ set(DOXYGEN_OUTPUT_LANGUAGE Russian)
 
 doxygen_add_docs(
         doc ALL
-        ${PROJECT_SOURCE_DIR}/
+        ${PROJECT_SOURCE_DIR}/field.h
         COMMENT "Generate HTML documentation"
 )
 
