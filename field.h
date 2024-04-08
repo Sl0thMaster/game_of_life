@@ -19,9 +19,9 @@ public:
 
     void toggle(int x, int y);
 
-    int* living_cells();
+    bool get(int x, int y);
 
-    void set(const int* x, int size);
+    int* living_cells();
 
     void load(const std::string& file_path);
 
