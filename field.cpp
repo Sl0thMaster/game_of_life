@@ -4,6 +4,7 @@ Field::Field(int field_width, int field_height) {
     width = field_width;
     height = field_height;
     field = new bool[width * height];
+    clear();
 }
 
 Field::Field(const Field &other) {
@@ -14,8 +15,9 @@ Field::Field(const Field &other) {
         *(field + i) = *(other.field + i);
 }
 
-Field::Field(Field &&other) : width(other.width), height(other.height), field(other.field) {
+Field::Field(Field &&other) noexcept : width(other.width), height(other.height), field(other.field) {
     other.field = new bool[width * height];
+    other.clear();
 }
 
 Field &Field::operator=(Field copy) {
@@ -57,12 +59,6 @@ void Field::toggle(int x, int y) {
     field[y * width + x] = !field[y * width + x];
 }
 
-void Field::clear() {
-    for (int i = 0; i < height; i++)
-        for (int j = 0; j < width; j++)
-            field[i * width + j] = false;
-}
-
 int *Field::living_cells() {
     int number_of_living_cells = 0;
     for (int i = 0; i < width * height; i++)
@@ -76,7 +72,7 @@ int *Field::living_cells() {
     return result;
 }
 
-void Field::set(int *x, int size) {
+void Field::set(const int *x, int size) {
     for (int k = 0; k < size; k++)
         for (int i = 0; i < height; i++)
             for (int j = 0; j < width; j++)
@@ -84,8 +80,36 @@ void Field::set(int *x, int size) {
                     field[i * width + j] = true;
 }
 
+void Field::load(const std::string &file_path) {
+    std::ifstream in;
+    std::string line;
+    in.open(file_path);
+    int index = 0;
+    while (std::getline(in, line))
+        for (char c : line)
+            field[index++] = (int)c - 48;
+    in.close();
+}
+
+void Field::save(const std::string &file_path) {
+    std::ofstream out;
+    out.open(file_path);
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++)
+            out << field[i * width + j];
+        out << '\n';
+    }
+    out.close();
+}
+
 void Field::swap(Field &other) {
     std::swap(width, other.width);
     std::swap(height, other.height);
     std::swap(field, other.field);
+}
+
+void Field::clear() {
+    for (int i = 0; i < height; i++)
+        for (int j = 0; j < width; j++)
+            field[i * width + j] = false;
 }
