@@ -59,25 +59,23 @@ void Field::toggle(int x, int y) {
     field[y * width + x] = !field[y * width + x];
 }
 
+bool Field::get(int x, int y) {
+    return field[y * width + x];
+}
+
 int *Field::living_cells() {
     int number_of_living_cells = 0;
     for (int i = 0; i < width * height; i++)
         if (field[i])
             number_of_living_cells++;
-    int* result = new int[number_of_living_cells];
+    int* result = new int[2 * number_of_living_cells];
     int index = 0;
     for (int i = 0; i < width * height; i++)
-        if (field[i])
-            result[index++] = i;
+        if (field[i]) {
+            result[index++] = i % width;
+            result[index++] = i / width;
+        }
     return result;
-}
-
-void Field::set(const int *x, int size) {
-    for (int k = 0; k < size; k++)
-        for (int i = 0; i < height; i++)
-            for (int j = 0; j < width; j++)
-                if (x[k] == i * width + j)
-                    field[i * width + j] = true;
 }
 
 void Field::load(const std::string &file_path) {
