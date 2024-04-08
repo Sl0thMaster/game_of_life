@@ -16,18 +16,6 @@ int field_scale = 2;
 
 int main()
 {
-
-    Field field_6 = Field(5, 5);
-    field_6.load("tests/test_1.txt");
-    for (int i = 0; i < 10; i++)
-        std::cout << field_6.living_cells()[i] << " ";
-    std::cout << std::endl;
-    for (int j = 0; j < 4; j++)
-        field_6.advance();
-    int expected_cells_2[10] = {2, 1, 3, 2, 1, 3, 2, 3, 3, 3};
-    for (int i = 0; i < 10; i++)
-        std::cout << field_6.living_cells()[i] << " ";
-
 //    Поле
     Field field = Field(field_scale * WIDTH, field_scale * HEIGHT);
 
