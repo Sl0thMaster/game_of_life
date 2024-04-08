@@ -6,11 +6,7 @@ const int WIDTH = 26;
 const int HEIGHT = 18;
 const int SIDE_OF_SQUARE = 40;
 const int FPS = 60;
-int set_0[5] = {28, 55, 79, 80, 81};
-int set_1[36] = {77, 127, 129, 169, 170, 177, 178, 191, 192, 220, 224,
-                 229, 230, 243, 244, 261, 262, 271, 277,281, 282,
-                 313, 314, 323, 327, 329, 330, 335, 337, 375, 381,
-                 389, 428, 432, 481, 482};
+//int set_0[5] = {28, 55, 79, 80, 81};
 int step = 0;
 int game_speed = 3;
 bool paused = true;
@@ -20,9 +16,20 @@ int field_scale = 2;
 
 int main()
 {
+
+    Field field_6 = Field(5, 5);
+    field_6.load("tests/test_1.txt");
+    for (int i = 0; i < 10; i++)
+        std::cout << field_6.living_cells()[i] << " ";
+    std::cout << std::endl;
+    for (int j = 0; j < 4; j++)
+        field_6.advance();
+    int expected_cells_2[10] = {2, 1, 3, 2, 1, 3, 2, 3, 3, 3};
+    for (int i = 0; i < 10; i++)
+        std::cout << field_6.living_cells()[i] << " ";
+
 //    Поле
     Field field = Field(field_scale * WIDTH, field_scale * HEIGHT);
-//    field.set(set_1, std::size(set_1));
 
     sf::RectangleShape cell(sf::Vector2f(SIDE_OF_SQUARE / field_scale, SIDE_OF_SQUARE / field_scale));
     cell.setFillColor(sf::Color::White);
