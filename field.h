@@ -1,14 +1,15 @@
 #include <iostream>
+#include <fstream>
 
 class Field {
 public:
-    Field(int field_width, int field_height);;
+    Field(int field_width, int field_height);
 
-    Field(const Field& other);;
+    Field(const Field& other);
 
-    Field(Field&& other);;
+    Field(Field&& other) noexcept ;
 
-    Field& operator=(Field copy);;
+    Field& operator=(Field copy);
 
     ~Field();
 
@@ -18,11 +19,13 @@ public:
 
     void toggle(int x, int y);
 
-    void clear();
-
     int* living_cells();
 
-    void set(int* x, int size);
+    void set(const int* x, int size);
+
+    void load(const std::string& file_path);
+
+    void save(const std::string& file_path);
 
 private:
     bool* field;
@@ -30,4 +33,6 @@ private:
     int height;
 
     void swap(Field& other);
+
+    void clear();
 };
