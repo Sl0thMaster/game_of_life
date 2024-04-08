@@ -17,6 +17,19 @@ add_executable(field_test test.cpp)
 target_link_libraries(field_test PRIVATE field)
 add_test(NAME field_test COMMAND field_test)
 
+find_package(Doxygen)
+
+set(DOXYGEN_GENERATE_HTML YES)
+set(DOXYGEN_USE_MATHJAX YES)
+set(DOXYGEN_EXTRACT_PRIVATE YES)
+set(DOXYGEN_OUTPUT_LANGUAGE Russian)
+
+doxygen_add_docs(
+        doc ALL
+        ${PROJECT_SOURCE_DIR}/
+        COMMENT "Generate HTML documentation"
+)
+
 FetchContent_Declare(
         sfml
         GIT_REPOSITORY "https://github.com/SFML/SFML"
@@ -31,3 +44,7 @@ file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/textures DESTINATION ${CMAKE_CURRENT_BINAR
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/saves DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/tests DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/slkscr.ttf DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
+set(CMAKE_INSTALL_DOCDIR ${CMAKE_INSTALL_DATAROOTDIR}/doc/${PROJECT_NAME})
+install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/doc/html/
+        DESTINATION ${CMAKE_INSTALL_DOCDIR})
